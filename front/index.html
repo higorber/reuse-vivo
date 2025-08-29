@@ -86,9 +86,8 @@
             </div>
             
             <div id="loggedInButtons" class="hidden items-center space-x-4">
-                <button id="negotiationsButton" class="relative bg-green-500 text-white rounded-full p-3 shadow-lg hover:bg-green-600 transition-colors" aria-label="Negociações">
-                    <i class="fas fa-bell" aria-label="Notificações"></i>
-                    <span id="notificationBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                <button id="negotiationsButton" class="bg-green-500 text-white rounded-full p-3 shadow-lg hover:bg-green-600 transition-colors" aria-label="Negociações">
+                    <i class="fas fa-exchange-alt" aria-label="Negociações"></i>
                 </button>
 
                 <a href="perfil.html" class="text-secondary hover:text-primary transition-colors" aria-label="Perfil">
@@ -104,9 +103,9 @@
     <nav id="menuList">
         <ul class="flex flex-col space-y-2 p-4">
             <li><a href="index.html" class="text-secondary hover:text-accent-color font-semibold transition-colors w-full text-left">Home</a></li>
-            <li><a href="perfil.html" class="text-secondary hover:text-accent-color font-semibold transition-colors w-full text-left">Perfil</a></li>
-            <li><a href="loja.html" class="text-secondary hover:text-accent-color font-semibold transition-colors w-full text-left">Loja</a></li>
-            <li><a href="index.html#sobre" class="text-secondary hover:text-accent-color font-semibold transition-colors w-full text-left">Sobre Nós</a></li>
+            <li><a href="perfil.html", class="text-secondary hover:text-accent-color font-semibold transition-colors w-full text-left">Perfil</a></li>
+            <li><a href="loja.html", class="text-secondary hover:text-accent-color font-semibold transition-colors w-full text-left">Loja</a></li>
+            <li><a href="index.html#sobre", class="text-secondary hover:text-accent-color font-semibold transition-colors w-full text-left">Sobre Nós</a></li>
         </ul>
     </nav>
     
@@ -117,7 +116,7 @@
             Troque, <text id="reuse">ReUse</text>, Renove.
         </h2>
         <p class="text-lg md:text-xl font-light mb-8 max-w-2xl mx-auto" style="color: #ffffff">
-            Dê uma nova vida às suas roupas e encontre tesouros únicos com a nossa comunidade.
+            Dê uma nova vida às suas roupas and encontre tesouros únicos com a nossa comunidade.
             O futuro da moda é circular, e começa aqui com você.
         </p>
         <a href="loja.html" class="inline-block bg-white text-green-600 font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:bg-gray-200 transition-transform transform hover:scale-105">
@@ -209,6 +208,9 @@
             const loggedOutButtons = document.getElementById('loggedOutButtons');
             const logoutButton = document.getElementById('logoutButton');
 
+            // Base URL for API requests
+            const API_BASE_URL = 'https://reuse-vivo-back.onrender.com';
+
             menuToggle.addEventListener('click', () => {
                 menuList.classList.toggle('active');
             });
@@ -216,7 +218,7 @@
             // Função para verificar o status de login
             const checkLoginStatus = async () => {
                 try {
-                    const response = await fetch('/status');
+                    const response = await fetch(`${API_BASE_URL}/status`);
                     const data = await response.json();
                     if (data.loggedIn) {
                         loggedInButtons.classList.remove('hidden');
@@ -235,35 +237,15 @@
             // Adiciona um listener para o botão de sair
             logoutButton.addEventListener('click', async () => {
                 try {
-                    await fetch('/logout', { method: 'POST' });
+                    await fetch(`${API_BASE_URL}/logout`, { method: 'POST' });
                     window.location.href = '/'; // Redireciona para a página inicial
                 } catch (error) {
                     console.error('Erro ao fazer logout:', error);
                 }
             });
 
-            // Função para atualizar notificações
-            const atualizarNotificacoes = async () => {
-                try {
-                    const response = await fetch('/notificacoes/contagem');
-                    if (response.ok) {
-                        const data = await response.json();
-                        const badge = document.getElementById('notificationBadge');
-                        
-                        if (data.contagem > 0) {
-                            badge.classList.remove('hidden');
-                            badge.textContent = data.contagem;
-                        } else {
-                            badge.classList.add('hidden');
-                        }
-                    }
-                } catch (error) {
-                    console.error('Erro ao atualizar notificações:', error);
-                }
-            };
-
-            // Configurar botão de notificações
-            const configurarBotaoNotificacoes = () => {
+            // Configurar botão de negociações
+            const configurarBotaoNegociacoes = () => {
                 const negotiationsButton = document.getElementById('negotiationsButton');
                 if (negotiationsButton) {
                     negotiationsButton.addEventListener('click', () => {
@@ -273,11 +255,7 @@
             };
 
             checkLoginStatus();
-            configurarBotaoNotificacoes();
-            
-            // Atualizar notificações inicialmente e a cada 30 segundos
-            atualizarNotificacoes();
-            setInterval(atualizarNotificacoes, 30000);
+            configurarBotaoNegociacoes();
         });
     </script>
 </body>

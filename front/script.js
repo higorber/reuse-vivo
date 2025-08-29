@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterButtons = document.querySelectorAll('.filter-button');
     let allPecas = [];
 
+    // Base URL for API requests
+    const API_BASE_URL = 'https://reuse-vivo-back.onrender.com';
+
     // Peças de exemplo para exibir se a loja estiver vazia
     const pecasDeExemplo = [
     { id: 'ex-1', titulo: "Camiseta Monalisa Preta", descricao: "Pouco usada, ideal para qualquer ocasião.", tipo: "Troca", categoria: "Masculino", imagem: "/image/mona.png" },
@@ -26,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const checkLoginStatus = async () => {
         try {
-            const response = await fetch('/status');
+            const response = await fetch(`${API_BASE_URL}/status`);
             const data = await response.json();
             
             if (data.loggedIn) {
@@ -45,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     logoutButton.addEventListener('click', async () => {
         try {
-            await fetch('/logout', { method: 'POST' });
+            await fetch(`${API_BASE_URL}/logout`, { method: 'POST' });
             window.location.href = '/';
         } catch (error) {
             console.error('Erro ao fazer logout:', error);
@@ -91,7 +94,7 @@ const actionButtonText = peca.tipo === 'Venda' ? 'Comprar' : 'Propor Troca';
 
     const loadAllPecas = async () => {
         try {
-            const response = await fetch('/pecas');
+            const response = await fetch(`${API_BASE_URL}/pecas`);
             const pecasDoServidor = await response.json();
             
             if (pecasDoServidor.length > 0) {
@@ -124,28 +127,8 @@ const actionButtonText = peca.tipo === 'Venda' ? 'Comprar' : 'Propor Troca';
         });
     });
 
-    // Função para atualizar notificações
-    const atualizarNotificacoes = async () => {
-        try {
-            const response = await fetch('/notificacoes/contagem');
-            if (response.ok) {
-                const data = await response.json();
-                const badge = document.getElementById('notificationBadge');
-                
-                if (data.contagem > 0) {
-                    badge.classList.remove('hidden');
-                    badge.textContent = data.contagem;
-                } else {
-                    badge.classList.add('hidden');
-                }
-            }
-        } catch (error) {
-            console.error('Erro ao atualizar notificações:', error);
-        }
-    };
-
-    // Configurar botão de notificações
-    const configurarBotaoNotificacoes = () => {
+    // Configurar botão de negociações
+    const configurarBotaoNegociacoes = () => {
         const negotiationsButton = document.getElementById('negotiationsButton');
         if (negotiationsButton) {
             negotiationsButton.addEventListener('click', () => {
@@ -156,9 +139,5 @@ const actionButtonText = peca.tipo === 'Venda' ? 'Comprar' : 'Propor Troca';
 
     checkLoginStatus();
     loadAllPecas();
-    configurarBotaoNotificacoes();
-    
-    // Atualizar notificações inicialmente e a cada 30 segundos
-    atualizarNotificacoes();
-    setInterval(atualizarNotificacoes, 30000);
+    configurarBotaoNegociacoes();
 });
